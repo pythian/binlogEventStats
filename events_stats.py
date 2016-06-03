@@ -1,17 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-## Install pymysqlreplication using pip:
-
-```
-pip install mysql-replication
-```
-
-## Using source
-
-git clone <this repo>
-
-"""
 
 # by Emanuel Calvo "3manuek"
 #
@@ -28,19 +16,7 @@ git clone <this repo>
 #        if isinstance(binlogevent, QueryEvent):
 #            print binlogevent.query
 #
-# Future applications can be applied in:
-# https://www.percona.com/blog/2016/06/03/binary-logs-make-mysql-5-7-slower-than-5-6/
 
-"""
-Have fun:
-
-sysbench --test=oltp --mysql-port=22695 --mysql-host=127.0.0.1 \
-  --mysql-user=msandbox --mysql-password=msandbox --mysql-db=test prepare
-
-sysbench --test=oltp --mysql-port=22695 --mysql-host=127.0.0.1 \
-    --mysql-user=msandbox --mysql-password=msandbox --mysql-db=test run
-
-"""
 
 import re, sys,signal #pprint
 from itertools import groupby
@@ -59,7 +35,7 @@ from pymysqlreplication.event import (
     #,NotImplementedEvent
 )
 
-from datetime import datetime 
+from datetime import datetime
 import time
 from pudb import set_trace
 
@@ -154,16 +130,15 @@ def main():
     # server_id is your slave identifier, it should be unique.
     # set blocking to True if you want to block and wait for the next event at
     # the end of the stream
-    #timeCheck = datetime.today()  # If event is bigger, sets it to now() and prints stats.
+    # If event is bigger, sets it to now() and prints stats.
     timeCheck = time.time()
-    #print "Starting at %s " % (timeCheck)
-    # We always want to use MASTER_AUTO_POSITION = 1
+
     # Only events help us to keep the stream shorter as we can.
     stream = BinLogStreamReader(connection_settings=MYSQL_SETTINGS,
                                 server_id=OPTIONS["serverid"],
                                 log_file=OPTIONS["log_file"],
                                 log_pos=OPTIONS["log_pos"],
-                                resume_stream= True, # If no log_pos, set to False
+                                resume_stream= True, # If no log_pos, set to False (from the beginning)
                                 #auto_position=1,
                                 blocking=True,
                                 only_events=[DeleteRowsEvent, WriteRowsEvent, UpdateRowsEvent,QueryEvent, RotateEvent,BeginLoadQueryEvent, ExecuteLoadQueryEvent])
@@ -172,9 +147,6 @@ def main():
     for binlogevent in stream:
         patternCollector = None
         occurrence = None
-        #if prevTimeFlag == 0:
-        #    txTimeCheck = binlogevent.timestamp
-        #    prevTimeFlag = 1
 
         if firstRun == 1:
             print "Binlog: %s Position: %s First Event TS: %s " % (OPTIONS["log_file"],OPTIONS["log_pos"], datetime.fromtimestamp(timeCheck))
