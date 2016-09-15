@@ -7,7 +7,18 @@ A fake slave that generates stats over the binary log streaming.
 All you need is:
 
 ```
+-- install pip 
+-- eg. On Ubuntu
+sudo apt-get update
+sudo apt-get install python-pip
+-- eg on Redhat/CentOS
+
+yum install python-pip
+
+-- Install mysql-replication python package
 pip install mysql-replication
+-- Install pudb python package
+pip install pudb
 ```
 
 ## Want to help?
